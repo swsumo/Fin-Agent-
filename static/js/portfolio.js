@@ -22,12 +22,20 @@
     const overallSection = document.getElementById('overall-section');
     const overallText = document.getElementById('overall-text');
 
+    const CURRENCY_SYMBOLS = { USD: '$', INR: '₹', GBP: '£', EUR: '€', JPY: '¥' };
+
     function fmt(value, prefix = '', suffix = '') {
         if (value === null || value === undefined) return '—';
         if (typeof value === 'number') {
             return prefix + value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + suffix;
         }
         return prefix + value + suffix;
+    }
+
+    function fmtMoney(value, currency) {
+        if (value === null || value === undefined) return '—';
+        const symbol = CURRENCY_SYMBOLS[currency] || (currency ? currency + ' ' : '$');
+        return fmt(value, symbol);
     }
 
     function updateProgress(currentStep) {
@@ -51,9 +59,9 @@
             const plClass = (h.unrealized_pl_pct || 0) >= 0 ? 'positive-text' : 'negative-text';
             tr.innerHTML = `
                 <td>${h.ticker}</td>
-                <td>${fmt(h.avg_price, '$')}</td>
+                <td>${fmtMoney(h.avg_price, h.currency)}</td>
                 <td>${fmt(h.shares)}</td>
-                <td>${h.error ? '—' : fmt(h.current_price, '$')}</td>
+                <td>${h.error ? '—' : fmtMoney(h.current_price, h.currency)}</td>
                 <td class="${plClass}">${h.error ? h.error : fmt(h.unrealized_pl_pct, '', '%')}</td>
                 <td><span class="verdict-badge verdict-${(rec ? rec.recommendation : 'hold').toLowerCase().replace(/\\s+/g, '-')}">${rec ? rec.recommendation : '—'}</span></td>
             `;

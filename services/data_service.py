@@ -12,6 +12,7 @@ def fetch_company_info(ticker):
         "industry": info.get("industry"),
         "market_cap": info.get("marketCap"),
         "employees": info.get("fullTimeEmployees"),
+        "currency": info.get("currency") or "USD",
     }
 
 

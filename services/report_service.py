@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from html import escape
 
 VERDICT_COLORS = {"BUY": "#2ecc71", "SELL": "#e63950", "HOLD": "#888"}
+CURRENCY_SYMBOLS = {"USD": "$", "INR": "₹", "GBP": "£", "EUR": "€", "JPY": "¥"}
 
 
 def _list_html(items):
@@ -17,6 +18,9 @@ def build_report_html(state, report_json):
     verdict = report_json.get("investment_verdict", "HOLD").upper()
     verdict_color = VERDICT_COLORS.get(verdict, "#888")
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    currency_symbol = CURRENCY_SYMBOLS.get(price_data.get("currency"), "$")
+    current_price = price_data.get("current_price")
+    price_display = f"{currency_symbol}{current_price}" if current_price is not None else "—"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -35,7 +39,7 @@ def build_report_html(state, report_json):
 </head>
 <body>
   <h1>{ticker} — {company_name}</h1>
-  <p class="muted">Generated {generated_at} · Current price: {price_data.get('current_price', '—')}</p>
+  <p class="muted">Generated {generated_at} · Current price: {price_display}</p>
   <span class="verdict">{verdict}</span>
   <p>{escape(report_json.get('verdict_reasoning', ''))}</p>
 

@@ -78,6 +78,7 @@ def _enrich_holding(holding):
         "current_price": current_price,
         "unrealized_pl_pct": unrealized_pl_pct,
         "sector": company_info.get("sector"),
+        "currency": company_info.get("currency", "USD"),
         "day_change_pct": price_data.get("day_change_pct"),
         "pe_ratio": fundamentals.get("pe_ratio"),
         "revenue_growth": fundamentals.get("revenue_growth"),

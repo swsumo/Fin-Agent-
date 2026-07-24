@@ -45,12 +45,24 @@
 
     downloadBtn.addEventListener('click', () => window.print());
 
+    const CURRENCY_SYMBOLS = { USD: '$', INR: '₹', GBP: '£', EUR: '€', JPY: '¥' };
+    let currencySymbol = '$';
+
+    function setCurrency(code) {
+        currencySymbol = CURRENCY_SYMBOLS[code] || (code ? code + ' ' : '$');
+    }
+
     function fmt(value, suffix = '') {
         if (value === null || value === undefined) return '—';
         if (typeof value === 'number') {
             return value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + suffix;
         }
         return value + suffix;
+    }
+
+    function fmtMoney(value) {
+        if (value === null || value === undefined) return '—';
+        return currencySymbol + value.toLocaleString(undefined, { maximumFractionDigits: 2 });
     }
 
     function metricCard(label, value) {
@@ -69,12 +81,13 @@
     }
 
     function renderPrice(priceData, fundamentals) {
+        setCurrency(priceData.currency);
         priceGrid.innerHTML = '';
         const rows = [
             ['Sector', priceData.sector],
-            ['Current Price', fmt(priceData.current_price, priceData.current_price != null ? ' $' : '')],
+            ['Current Price', fmtMoney(priceData.current_price)],
             ['Day Change', fmt(priceData.day_change_pct, '%')],
-            ['Market Cap', priceData.market_cap ? fmt(priceData.market_cap / 1e9, 'B') : '—'],
+            ['Market Cap', priceData.market_cap ? currencySymbol + fmt(priceData.market_cap / 1e9, 'B') : '—'],
             ['P/E Ratio', fmt(fundamentals.pe_ratio)],
             ['EPS', fmt(fundamentals.eps)],
             ['Profit Margin', fundamentals.profit_margin != null ? fmt(fundamentals.profit_margin * 100, '%') : '—'],
@@ -142,8 +155,8 @@
             dcfSection.style.display = '';
             return;
         }
-        dcfIntrinsic.textContent = fmt(dcf.intrinsic_value, ' $');
-        dcfCurrentPrice.textContent = fmt(dcf.current_price, ' $');
+        dcfIntrinsic.textContent = fmtMoney(dcf.intrinsic_value);
+        dcfCurrentPrice.textContent = fmtMoney(dcf.current_price);
         dcfMargin.textContent = fmt(dcf.margin_of_safety, '%');
         dcfMargin.style.color = (dcf.margin_of_safety || 0) >= 0 ? 'var(--positive)' : 'var(--negative)';
         dcfVerdict.textContent = dcf.verdict || '—';

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Report History — FinAgent{% endblock %}
+{% block content %}
+<span class="section-label">Report History</span>
+<input id="history-search" class="search-input history-search" type="text" placeholder="Filter by ticker or company...">
+
+<table class="history-table">
+    <thead>
+        <tr>
+            <th>Ticker</th>
+            <th>Company</th>
+            <th>Generated</th>
+            <th>Verdict</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="history-body">
+        {% for r in reports %}
+        <tr data-ticker="{{ r.ticker|lower }}" data-company="{{ (r.company_name or '')|lower }}" data-id="{{ r.id }}">
+            <td><a href="/report/{{ r.id }}">{{ r.ticker }}</a></td>
+            <td>{{ r.company_name or '—' }}</td>
+            <td class="muted">{{ r.generated_at }}</td>
+            <td>
+                {% if r.report_json and r.report_json.investment_verdict %}
+                <span class="verdict-badge verdict-{{ r.report_json.investment_verdict|lower }}">{{ r.report_json.investment_verdict }}</span>
+                {% else %}
+                <span class="muted">—</span>
+                {% endif %}
+            </td>
+            <td><span class="status-badge status-{{ r.status }}">{{ r.status }}</span></td>
+            <td><button class="delete-btn" data-id="{{ r.id }}">Delete</button></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">No reports generated yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<span class="section-label history-section-spacer">Portfolio Analyses</span>
+<table class="history-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Input</th>
+            <th>Overall Call</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in analyses %}
+        <tr>
+            <td class="muted">{{ a.generated_at }}</td>
+            <td>{{ a.input_type }}</td>
+            <td>
+                {% if a.analysis_json and a.analysis_json.overall_recommendation %}
+                {{ a.analysis_json.overall_recommendation[:60] }}…
+                {% else %}
+                <span class="muted">—</span>
+                {% endif %}
+            </td>
+            <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
+            <td><a href="/analysis/{{ a.id }}">View</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">No portfolio analyses yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const searchInput = document.getElementById('history-search');
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        document.querySelectorAll('#history-body tr[data-ticker]').forEach((row) => {
+            const matches = row.dataset.ticker.includes(query) || row.dataset.company.includes(query);
+            row.style.display = matches ? '' : 'none';
+        });
+    });
+
+    document.getElementById('history-body').addEventListener('click', async (e) => {
+        if (!e.target.classList.contains('delete-btn')) return;
+        const id = e.target.dataset.id;
+        if (!confirm('Delete this report?')) return;
+        const res = await fetch('/api/report/' + id, { method: 'DELETE' });
+        if (res.ok) {
+            e.target.closest('tr').remove();
+        }
+    });
+</script>
+{% endblock %}

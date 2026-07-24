@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}FinAgent — Research any stock{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1 class="hero-title">Research any stock</h1>
+    <p class="hero-subtitle">Enter a ticker and let the agent collect data, analyse news, and assess the fundamentals for you.</p>
+    <form id="research-form" class="search-wrap">
+        <input
+            id="ticker-input"
+            class="search-input"
+            type="text"
+            placeholder="Enter ticker — AAPL, TCS.NS, RELIANCE.NS"
+            autocomplete="off"
+            required
+        >
+        <button type="submit" class="btn-primary">Generate Report</button>
+    </form>
+    <p id="form-error" class="form-error"></p>
+    <p class="analyze-cta"><a href="/analyze">Analyze My Investments →</a></p>
+</div>
+
+<section>
+    <span class="section-label">Recent Reports</span>
+    {% if recent_reports %}
+    <div class="recent-list">
+        {% for r in recent_reports %}
+        <a class="recent-item" href="/report/{{ r.id }}">
+            <span class="recent-ticker">{{ r.ticker }}</span>
+            <span class="recent-company">{{ r.company_name or 'Pending...' }}</span>
+            <span class="recent-status status-{{ r.status }}">{{ r.status }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No reports generated yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('research-form');
+    const errorEl = document.getElementById('form-error');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.textContent = '';
+        const ticker = document.getElementById('ticker-input').value.trim();
+        if (!ticker) return;
+
+        const submitBtn = form.querySelector('button');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Starting...';
+
+        try {
+            const res = await fetch('/api/research', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticker }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Something went wrong');
+            window.location = '/report/' + data.report_id;
+        } catch (err) {
+            errorEl.textContent = err.message;
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Generate Report';
+        }
+    });
+</script>
+{% endblock %}

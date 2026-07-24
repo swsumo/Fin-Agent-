@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Analyze My Investments — FinAgent{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1 class="hero-title">Analyze My Investments</h1>
+    <p class="hero-subtitle">Upload a screenshot of your holdings, or just type them in — the agent will research each position and tell you whether to buy more, hold, or sell.</p>
+</div>
+
+<form id="analyze-form" class="card analyze-form">
+    <label class="upload-label">
+        <span class="section-label">Screenshot of your holdings (optional)</span>
+        <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp">
+    </label>
+
+    <div class="or-divider">or</div>
+
+    <label class="upload-label">
+        <span class="section-label">Paste your holdings</span>
+        <textarea id="holdings-text" class="search-input holdings-textarea" rows="5" placeholder="e.g. AAPL, avg 150, 10 shares&#10;MSFT, avg 300, 5 shares"></textarea>
+    </label>
+
+    <button type="submit" class="btn-primary">Analyze My Investments</button>
+    <p id="form-error" class="form-error"></p>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('analyze-form');
+    const errorEl = document.getElementById('form-error');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.textContent = '';
+
+        const imageFile = document.getElementById('image-input').files[0];
+        const holdingsText = document.getElementById('holdings-text').value.trim();
+
+        if (!imageFile && !holdingsText) {
+            errorEl.textContent = 'Upload a screenshot or paste your holdings first.';
+            return;
+        }
+
+        const submitBtn = form.querySelector('button');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Starting...';
+
+        const formData = new FormData();
+        if (imageFile) formData.append('image', imageFile);
+        if (holdingsText) formData.append('holdings_text', holdingsText);
+
+        try {
+            const res = await fetch('/api/analyze-portfolio', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Something went wrong');
+            window.location = '/analysis/' + data.analysis_id;
+        } catch (err) {
+            errorEl.textContent = err.message;
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Analyze My Investments';
+        }
+    });
+</script>
+{% endblock %}

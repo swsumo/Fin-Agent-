@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FinAgent{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/" class="logo">FinAgent</a>
+        </div>
+        <div class="navbar-links">
+            {% if current_user %}
+            <a href="/" class="{{ 'active' if request.path == '/' else '' }}">Home</a>
+            <a href="/analyze" class="{{ 'active' if request.path == '/analyze' else '' }}">Analyze Portfolio</a>
+            <a href="/history" class="{{ 'active' if request.path == '/history' else '' }}">History</a>
+            {% endif %}
+        </div>
+        <div class="navbar-right">
+            {% if current_user %}
+            <span class="navbar-user">{{ current_user.email }}</span>
+            <form method="post" action="/logout" class="navbar-logout-form">
+                <button type="submit" class="link-btn">Logout</button>
+            </form>
+            {% else %}
+            <a href="/login" class="{{ 'active' if request.path == '/login' else '' }}">Login</a>
+            <a href="/signup" class="{{ 'active' if request.path == '/signup' else '' }}">Sign up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="content fade-in">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <p class="flash-message">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div>This is a student project built for educational purposes only. It is not financial advice — data may be delayed, incomplete, or inaccurate. Do not use it to make real investment decisions.</div>
+        <div>Questions or feedback? Reach out at <a href="mailto:swapnilmogal26@gmail.com">swapnilmogal26@gmail.com</a></div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

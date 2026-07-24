@@ -1,0 +1,8 @@
+flask
+langgraph
+langchain-core
+groq
+yfinance
+pandas
+python-dotenv
+gunicorn

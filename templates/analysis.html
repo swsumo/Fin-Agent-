@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Portfolio Analysis — FinAgent{% endblock %}
+{% block content %}
+<div id="analysis-root" data-analysis-id="{{ analysis.id }}">
+    <div class="report-header">
+        <div>
+            <h1 class="report-ticker">Portfolio Analysis</h1>
+            <span class="report-company">Generated {{ analysis.generated_at }}</span>
+        </div>
+        <span id="analysis-status-badge" class="status-badge status-{{ analysis.status }}">{{ analysis.status }}</span>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-step" data-step="extracting">
+            <span class="progress-dot"></span>
+            <span class="progress-label">Extract Holdings</span>
+        </div>
+        <div class="progress-step" data-step="researching">
+            <span class="progress-dot"></span>
+            <span class="progress-label">Research Positions</span>
+        </div>
+        <div class="progress-step" data-step="synthesizing">
+            <span class="progress-dot"></span>
+            <span class="progress-label">Synthesize</span>
+        </div>
+    </div>
+
+    <p id="error-banner" class="error-banner" style="display:none;"></p>
+
+    <section id="summary-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Portfolio Summary</span>
+        <p id="portfolio-summary-text"></p>
+        <p id="market-context-text" class="muted"></p>
+    </section>
+
+    <section id="holdings-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Holdings</span>
+        <div class="holdings-table-wrap">
+            <table class="holdings-table" id="holdings-table">
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Avg Price</th>
+                        <th>Shares</th>
+                        <th>Current Price</th>
+                        <th>P/L</th>
+                        <th>Call</th>
+                    </tr>
+                </thead>
+                <tbody id="holdings-body"></tbody>
+            </table>
+        </div>
+        <div id="holdings-reasoning"></div>
+    </section>
+
+    <section id="historical-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Historical Context</span>
+        <p id="historical-text"></p>
+    </section>
+
+    <section id="overall-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Overall Recommendation</span>
+        <p id="overall-text"></p>
+    </section>
+
+    <p id="generating-note" class="muted generating-note">Still analyzing...</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/portfolio.js') }}"></script>
+{% endblock %}

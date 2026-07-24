@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}{{ report.ticker }} — FinAgent Report{% endblock %}
+{% block content %}
+<div id="report-root" data-report-id="{{ report.id }}">
+    <div class="report-header no-print">
+        <div>
+            <h1 class="report-ticker">{{ report.ticker }}</h1>
+            <span id="report-company" class="report-company">{{ report.company_name or 'Loading company info...' }}</span>
+        </div>
+        <div class="report-header-right">
+            <span id="verdict-badge" class="verdict-badge" style="display:none;"></span>
+            <span id="report-status-badge" class="status-badge status-{{ report.status }}">{{ report.status }}</span>
+        </div>
+    </div>
+
+    <div class="progress-bar no-print">
+        <div class="progress-step" data-step="data_collected">
+            <span class="progress-dot"></span>
+            <span class="progress-label">Data</span>
+        </div>
+        <div class="progress-step" data-step="news_analysed">
+            <span class="progress-dot"></span>
+            <span class="progress-label">News</span>
+        </div>
+        <div class="progress-step" data-step="financials_analysed">
+            <span class="progress-dot"></span>
+            <span class="progress-label">Analysis</span>
+        </div>
+        <div class="progress-step" data-step="dcf_complete">
+            <span class="progress-dot"></span>
+            <span class="progress-label">DCF</span>
+        </div>
+        <div class="progress-step" data-step="report_complete">
+            <span class="progress-dot"></span>
+            <span class="progress-label">Report</span>
+        </div>
+    </div>
+
+    <p id="error-banner" class="error-banner" style="display:none;"></p>
+
+    <section id="summary-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Executive Summary</span>
+        <p id="summary-text"></p>
+        <p id="verdict-reasoning" class="muted"></p>
+    </section>
+
+    <section id="price-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Price &amp; Fundamentals</span>
+        <div id="price-grid" class="metrics-grid"></div>
+    </section>
+
+    <section id="news-section" class="card fade-in" style="display:none;">
+        <span class="section-label">News &amp; Sentiment</span>
+        <div class="sentiment-summary">
+            <span id="sentiment-badge" class="sentiment-badge"></span>
+            <p id="sentiment-text" class="muted"></p>
+        </div>
+        <ul id="news-list" class="news-list"></ul>
+    </section>
+
+    <section id="analysis-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Bull vs Bear</span>
+        <div class="bull-bear-grid">
+            <div class="bull-card">
+                <h3>Bull Case</h3>
+                <p id="bull-case-text"></p>
+            </div>
+            <div class="bear-card">
+                <h3>Bear Case</h3>
+                <p id="bear-case-text"></p>
+            </div>
+        </div>
+        <div class="strengths-risks-grid">
+            <div>
+                <h4>Strengths</h4>
+                <ul id="strengths-list"></ul>
+            </div>
+            <div>
+                <h4>Risks</h4>
+                <ul id="risks-list"></ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="dcf-section" class="card fade-in" style="display:none;">
+        <span class="section-label">DCF Valuation</span>
+        <div class="dcf-grid">
+            <div class="metric-card">
+                <span class="metric-label">Intrinsic Value</span>
+                <span id="dcf-intrinsic" class="metric-value">—</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Current Price</span>
+                <span id="dcf-current-price" class="metric-value">—</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Margin of Safety</span>
+                <span id="dcf-margin" class="metric-value">—</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Verdict</span>
+                <span id="dcf-verdict" class="metric-value">—</span>
+            </div>
+        </div>
+        <p id="dcf-commentary" class="muted"></p>
+        <div id="dcf-assumptions" class="assumptions-row"></div>
+    </section>
+
+    <section id="highlights-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Financial Highlights</span>
+        <ul id="highlights-list"></ul>
+    </section>
+
+    <section id="watch-section" class="card fade-in" style="display:none;">
+        <span class="section-label">Key Metrics to Watch</span>
+        <div id="watch-pills" class="pills-row"></div>
+    </section>
+
+    <p id="generating-note" class="muted generating-note">Still generating...</p>
+
+    <button id="download-btn" class="btn-primary no-print download-btn" style="display:none;">Download Report PDF</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/agent.js') }}"></script>
+{% endblock %}

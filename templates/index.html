@@ -11,10 +11,34 @@
             type="text"
             placeholder="Enter ticker — AAPL, TCS.NS, RELIANCE.NS"
             autocomplete="off"
+            list="ticker-options"
             required
         >
+        <datalist id="ticker-options">
+            <option value="AAPL" label="Apple Inc.">
+            <option value="MSFT" label="Microsoft Corporation">
+            <option value="GOOGL" label="Alphabet Inc.">
+            <option value="AMZN" label="Amazon.com Inc.">
+            <option value="NVDA" label="NVIDIA Corporation">
+            <option value="TSLA" label="Tesla, Inc.">
+            <option value="META" label="Meta Platforms, Inc.">
+            <option value="NFLX" label="Netflix, Inc.">
+            <option value="JPM" label="JPMorgan Chase & Co.">
+            <option value="V" label="Visa Inc.">
+            <option value="RELIANCE.NS" label="Reliance Industries">
+            <option value="TCS.NS" label="Tata Consultancy Services">
+            <option value="HDFCBANK.NS" label="HDFC Bank">
+            <option value="ICICIBANK.NS" label="ICICI Bank">
+            <option value="INFY.NS" label="Infosys">
+            <option value="KOTAKBANK.NS" label="Kotak Mahindra Bank">
+            <option value="SBIN.NS" label="State Bank of India">
+            <option value="BHARTIARTL.NS" label="Bharti Airtel">
+            <option value="ITC.NS" label="ITC Limited">
+            <option value="VEDL.NS" label="Vedanta Limited">
+        </datalist>
         <button type="submit" class="btn-primary">Generate Report</button>
     </form>
+    <p class="hero-hint muted">Pick a suggestion from the dropdown, or type any ticker — US, Indian (.NS/.BO), or otherwise.</p>
     <p id="form-error" class="form-error"></p>
     <p class="analyze-cta"><a href="/analyze">Analyze My Investments →</a></p>
 </div>

@@ -152,6 +152,12 @@ a {
     cursor: default;
 }
 
+.hero-hint {
+    font-size: 12px;
+    margin-top: 10px;
+    text-align: center;
+}
+
 .form-error {
     color: var(--negative);
     font-size: 13px;

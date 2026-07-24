@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime, timezone
 
-DB_PATH = "finagent.db"
+DB_PATH = "finsight.db"
 
 
 def get_connection():

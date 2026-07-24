@@ -26,7 +26,7 @@ def build_report_html(state, report_json):
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>{ticker} — FinAgent Research Report</title>
+<title>{ticker} — Finsight Research Report</title>
 <style>
   body {{ background:#1a1a1a; color:#f0f0f0; font-family:-apple-system,Segoe UI,Roboto,sans-serif; max-width:820px; margin:0 auto; padding:32px 20px; }}
   h1 {{ margin-bottom:0; }}

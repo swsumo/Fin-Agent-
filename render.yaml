@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: finagent
+    name: finsight
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
